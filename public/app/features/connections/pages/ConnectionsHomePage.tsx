@@ -14,7 +14,11 @@ export default function ConnectionsHomePage() {
 
   const isOnPrem = !config.pluginAdminExternalManageEnabled;
 
-  let cardsData = isOnPrem ? getOssCardData() : getCloudCardData();
+  // Curated instance: users must not add connections. Drop the "Add new
+  // connection" card; keep the data-sources card.
+  let cardsData = (isOnPrem ? getOssCardData() : getCloudCardData()).filter(
+    (card) => card.url !== '/connections/add-new-connection'
+  );
 
   return (
     <Page
