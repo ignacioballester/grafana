@@ -17,7 +17,6 @@ import { MegaMenuExtensionPoint } from './MegaMenuExtensionPoint';
 import { MegaMenuHeader } from './MegaMenuHeader';
 import { MegaMenuItem } from './MegaMenuItem';
 import { usePinnedItems } from './hooks';
-import { customizePortfolioNav } from './portfolioNav';
 import { enrichWithInteractionTracking, getActiveItem } from './utils';
 
 export const MENU_WIDTH = '300px';
@@ -37,9 +36,11 @@ export const MegaMenu = memo(
     const [patchPreferences] = usePatchUserPreferencesMutation();
     const pinnedItems = usePinnedItems();
 
-    const navItems = customizePortfolioNav(navTree).map((item) =>
-      enrichWithInteractionTracking(item, state.megaMenuDocked)
-    );
+    // The nav tree is already customized centrally (navBarTree reducer). Here we
+    // only drop profile + help from the side list — they live in the top bar.
+    const navItems = navTree
+      .filter((item) => item.id !== 'profile' && item.id !== 'help')
+      .map((item) => enrichWithInteractionTracking(item, state.megaMenuDocked));
 
     const activeItem = getActiveItem(navItems, state.sectionNav.node, location.pathname);
 

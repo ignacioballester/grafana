@@ -46,11 +46,26 @@ function makeTree(): NavModelItem[] {
 describe('customizePortfolioNav', () => {
   it('removes hidden items including nested children', () => {
     const ids = flattenIds(customizePortfolioNav(makeTree()));
-    for (const hidden of ['home', 'bookmarks', 'starred', 'explore', 'drilldown', 'alerting', 'cfg', 'profile', 'help', 'connections-add-new-connection']) {
+    for (const hidden of ['home', 'bookmarks', 'starred', 'explore', 'drilldown', 'alerting', 'cfg', 'connections-add-new-connection']) {
       expect(ids).not.toContain(hidden);
     }
     // Data sources child survives
     expect(ids).toContain('connections-datasources');
+    // profile + help are NOT removed centrally (the top bar needs them; MegaMenu
+    // filters them from its own list)
+    expect(ids).toContain('profile');
+    expect(ids).toContain('help');
+  });
+
+  it('drops junk nav items with no text and no url', () => {
+    const tree: NavModelItem[] = [
+      { id: 'dashboards/browse', text: 'Dashboards' },
+      // malformed entry — surfaces as a kp_<hash> item in the command palette
+      { id: '', children: [{ id: 'x', text: 'x', url: '/x' }] },
+      { text: '   ' },
+    ];
+    const ids = customizePortfolioNav(tree).map((i) => i.id);
+    expect(ids).toEqual(['dashboards/browse']);
   });
 
   it('hoists Portfolio Admin to the top as Home with the home icon and keeps its pages', () => {
@@ -68,9 +83,10 @@ describe('customizePortfolioNav', () => {
     expect(apps?.text).toBe('Plugins');
   });
 
-  it('orders Portfolio Admin, Dashboards, Plugins, Connections', () => {
+  it('orders Portfolio Admin, Dashboards, Plugins, Connections (then the rest)', () => {
     const ids = customizePortfolioNav(makeTree()).map((i) => i.id);
-    expect(ids).toEqual([PORTFOLIO_ADMIN_NODE_ID, 'dashboards/browse', 'apps', 'connections']);
+    // profile/help keep their original relative order after the ranked items
+    expect(ids).toEqual([PORTFOLIO_ADMIN_NODE_ID, 'dashboards/browse', 'apps', 'connections', 'profile', 'help']);
   });
 
   it('returns a valid tree when Portfolio Admin is absent', () => {

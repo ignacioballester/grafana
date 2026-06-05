@@ -3,6 +3,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { type NavModelItem } from '@grafana/data';
 import { config } from '@grafana/runtime';
 
+import { customizePortfolioNav } from '../components/AppChrome/MegaMenu/portfolioNav';
 import { getNavSubTitle, getNavTitle } from '../utils/navBarItem-translations';
 
 export const initialState: NavModelItem[] = config.bootData?.navTree ?? [];
@@ -26,7 +27,7 @@ export const ID_PREFIX = 'starred/';
 
 const navTreeSlice = createSlice({
   name: 'navBarTree',
-  initialState: () => translateNav(config.bootData?.navTree ?? []),
+  initialState: () => customizePortfolioNav(translateNav(config.bootData?.navTree ?? [])),
   reducers: {
     setStarred: (state, action: PayloadAction<{ id: string; title: string; url: string; isStarred: boolean }>) => {
       const starredItems = state.find((navItem) => navItem.id === 'starred');
