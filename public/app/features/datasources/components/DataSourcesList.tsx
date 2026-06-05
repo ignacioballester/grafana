@@ -5,13 +5,12 @@ import { useLocation } from 'react-router-dom-v5-compat';
 import { type DataSourceSettings, type GrafanaTheme2 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { config, useFavoriteDatasources, type FavoriteDatasources } from '@grafana/runtime';
-import { EmptyState, LinkButton, TextLink, useStyles2 } from '@grafana/ui';
+import { EmptyState, TextLink, useStyles2 } from '@grafana/ui';
 import { useQueryParams } from 'app/core/hooks/useQueryParams';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AccessControlAction } from 'app/types/accessControl';
 import { type StoreState, useSelector } from 'app/types/store';
 
-import { ROUTES } from '../../connections/constants';
 import { useDatasourceFailureByUID } from '../../connections/hooks/useDatasourceAdvisorChecks';
 import { useLoadDataSources } from '../state/hooks';
 import { getDataSources, getDataSourcesCount } from '../state/selectors';
@@ -104,11 +103,6 @@ export function DataSourcesListView({
     return (
       <EmptyState
         variant="call-to-action"
-        button={
-          <LinkButton disabled={!hasCreateRights} href={ROUTES.DataSourcesNew} icon="database" size="lg">
-            <Trans i18nKey="data-source-list.empty-state.button-title">Add data source</Trans>
-          </LinkButton>
-        }
         message={t('data-source-list.empty-state.title', 'No data sources defined')}
       >
         <Trans i18nKey="data-source-list.empty-state.pro-tip">
