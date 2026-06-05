@@ -17,6 +17,7 @@ const HIDDEN_NAV_IDS = new Set([
   'drilldown',
   'cfg',
   'bookmarks',
+  'starred',
   'connections-add-new-connection',
 ]);
 

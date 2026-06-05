@@ -6,6 +6,7 @@ function makeTree(): NavModelItem[] {
   return [
     { id: 'home', text: 'Home', url: '/', icon: 'home-alt' },
     { id: 'bookmarks', text: 'Bookmarks', icon: 'bookmark' },
+    { id: 'starred', text: 'Starred', icon: 'star' },
     { id: 'dashboards/browse', text: 'Dashboards', icon: 'apps' },
     { id: 'explore', text: 'Explore', icon: 'compass' },
     { id: 'drilldown', text: 'Drilldown', icon: 'drilldown' },
@@ -45,7 +46,7 @@ function makeTree(): NavModelItem[] {
 describe('customizePortfolioNav', () => {
   it('removes hidden items including nested children', () => {
     const ids = flattenIds(customizePortfolioNav(makeTree()));
-    for (const hidden of ['home', 'bookmarks', 'explore', 'drilldown', 'alerting', 'cfg', 'profile', 'help', 'connections-add-new-connection']) {
+    for (const hidden of ['home', 'bookmarks', 'starred', 'explore', 'drilldown', 'alerting', 'cfg', 'profile', 'help', 'connections-add-new-connection']) {
       expect(ids).not.toContain(hidden);
     }
     // Data sources child survives
