@@ -18,10 +18,10 @@ function makeTree(): NavModelItem[] {
         {
           id: PORTFOLIO_ADMIN_NODE_ID,
           text: 'Portfolio Admin',
-          url: '/a/portfoliomanagement-portfolioadminv2-app',
+          url: '/a/core-app',
           children: [
-            { id: 'pa-portfolios', text: 'Portfolios', url: '/a/portfoliomanagement-portfolioadminv2-app/portfolios' },
-            { id: 'pa-instruments', text: 'Instruments', url: '/a/portfoliomanagement-portfolioadminv2-app/instruments' },
+            { id: 'pa-portfolios', text: 'Portfolios', url: '/a/core-app/portfolios' },
+            { id: 'pa-instruments', text: 'Instruments', url: '/a/core-app/instruments' },
           ],
         },
         { id: 'plugin-page-grafana-yfinance', text: 'YFinance', url: '/a/yfinance' },

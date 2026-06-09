@@ -1,6 +1,6 @@
 import { type NavModelItem } from '@grafana/data';
 
-export const PORTFOLIO_ADMIN_PLUGIN_ID = 'portfoliomanagement-portfolioadminv2-app';
+export const PORTFOLIO_ADMIN_PLUGIN_ID = 'core-app';
 export const PORTFOLIO_ADMIN_NODE_ID = `plugin-page-${PORTFOLIO_ADMIN_PLUGIN_ID}`;
 const APPS_NAV_ID = 'apps';
 const HOME_ICON = 'home-alt';
