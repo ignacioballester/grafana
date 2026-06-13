@@ -1,0 +1,63 @@
+name: opencapital-overlay
+
+# Builds the customized Grafana frontend (this fork) and publishes it as a
+# `grafana-overlay.tar.gz` release asset. The OpenCapital app's release CI
+# (in portfolio-management-v2) pulls a PINNED overlay release instead of
+# building the frontend itself. Bump the pin (opencapital-app/grafana-overlay.pin)
+# to adopt a new overlay.
+#
+# Trigger by pushing an `overlay-v*` tag, or via workflow_dispatch with a tag input.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish (e.g. overlay-v1)"
+        required: true
+  push:
+    tags: ["overlay-v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  overlay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - run: corepack enable
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: overlay-nm-${{ hashFiles('yarn.lock') }}
+
+      - name: Install + build frontend
+        run: |
+          yarn install --immutable
+          yarn build
+
+      - name: Package overlay (build + views)
+        run: |
+          tar czf grafana-overlay.tar.gz -C public build views
+          ls -lh grafana-overlay.tar.gz
+
+      - name: Publish overlay release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          notes="Customized Grafana frontend overlay (build + views) from ${GITHUB_SHA::10}."
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" grafana-overlay.tar.gz --clobber
+          else
+            gh release create "$tag" --target "$GITHUB_SHA" --title "Grafana overlay $tag" \
+              --notes "$notes" grafana-overlay.tar.gz
+          fi
